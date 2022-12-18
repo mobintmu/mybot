@@ -1,35 +1,38 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/joho/godotenv"
 	tele "gopkg.in/telebot.v3"
 
-	application "mybot/application"
+	app "mybot/app"
+	router "mybot/app/router"
 )
 
 func main() {
 
 	godotenv.Load(".env")
 
-	token := application.GoDotEnvVariable("TOKEN")
+	token := app.Base.GoDotEnvVariable("TOKEN")
 
 	pref := tele.Settings{
 		Token:  token,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 	}
 
-	b, err := tele.NewBot(pref)
+	bot, err := tele.NewBot(pref)
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal(err)
 		return
 	}
 
-	b.Handle("/hello", func(c tele.Context) error {
-		return c.Send("Hello!")
-	})
+	var routerHandler router.RouterInterface = router.NewRouter(bot)
 
-	b.Start()
+	routerHandler.Start()
+
+	bot.Start()
 }
