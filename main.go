@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/joho/godotenv"
 	tele "gopkg.in/telebot.v3"
 
 	app "mybot/app"
@@ -14,9 +13,9 @@ import (
 
 func main() {
 
-	godotenv.Load(".env")
+	var Base app.Application = app.App{}
 
-	token := app.Base.GoDotEnvVariable("TOKEN")
+	token := Base.GoDotEnvVariable("TOKEN")
 
 	pref := tele.Settings{
 		Token:  token,
