@@ -9,16 +9,21 @@ import (
 
 	app "mybot/app"
 	router "mybot/app/router"
+	client "mybot/client/horn"
 )
 
 func main() {
 
 	var Base app.Application = app.App{}
 
-	token := Base.GoDotEnvVariable("TOKEN")
+	var Horn client.HornInterface = client.NewClient(
+		Base.GoDotEnvVariable("HORN_URL"),
+	)
+
+	Horn.Call("hi")
 
 	pref := tele.Settings{
-		Token:  token,
+		Token:  Base.GoDotEnvVariable("TOKEN"),
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 	}
 
